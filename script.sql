@@ -1,6 +1,24 @@
+--exercicio 2
+CREATE OR REPLACE FUNCTION fn_previne_delete()
+RETURNS TRIGGER
+LANGUAGE plpgsql AS $$
+BEGIN
+	UPDATE tb_pessoa SET ativo = FALSE WHERE cod_pessoa = OLD.cod_pessoa;
+    RETURN NULL;
+END;
+$$;
+ 
+CREATE TRIGGER tg_previne_delete
+BEFORE DELETE ON tb_pessoa
+FOR EACH ROW
+EXECUTE PROCEDURE fn_previne_delete();
+
+--testando
+DELETE FROM tb_pessoa WHERE cod_pessoa = 1;
+
 -- exercicio 1
-ALTER TABLE tb_pessoa
-ADD COLUMN ativo BOOLEAN DEFAULT TRUE;
+-- ALTER TABLE tb_pessoa
+-- ADD COLUMN ativo BOOLEAN DEFAULT TRUE;
 
 -- --função que faz log de operações update na tabela pessoa
 -- CREATE OR REPLACE FUNCTION fn_log_pessoa_update()
